@@ -9,9 +9,20 @@ pipeline {
     }
 
     stage('Test') {
-      steps {
-        echo 'Test Maven App'
-        sh 'mvn clean test'
+      parallel {
+        stage('Test') {
+          steps {
+            echo 'Test Maven App'
+            sh 'mvn clean test'
+          }
+        }
+
+        stage('SCA') {
+          steps {
+            sleep 5
+          }
+        }
+
       }
     }
 
@@ -19,7 +30,7 @@ pipeline {
       steps {
         echo 'Package Maven App'
         sh 'mvn package -DskipTests'
-        archiveArtifacts '*/target/*.war'
+        archiveArtifacts 'target/*.war'
       }
     }
 
