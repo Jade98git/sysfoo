@@ -44,11 +44,11 @@ pipeline {
         }
 
         stage('Docker BnP') {
-          agent any
-          steps {
-            when {
+           when {
               branch 'master'
             }
+          agent any
+          steps {
             script {
               "docker image build -t dockerusernmae/sysfoo:v${env.BUILD_ID} ."
             }
