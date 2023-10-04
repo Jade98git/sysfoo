@@ -56,5 +56,11 @@ pipeline {
       }
     }
 
+    stage('Delpoy Dev') {
+      steps {
+        sh 'docker-compose up -d'
+      }
+    }
+
   }
 }
