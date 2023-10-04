@@ -1,12 +1,13 @@
 pipeline {
-  agent {
-    docker {
-      image 'maven:3.6.3-jdk-11-slim'
-    }
-
-  }
+  agent none
   stages {
     stage('Build') {
+      agent {
+        docker {
+          image 'maven:3.6.3-jdk-11-slim'
+        }
+
+      }
       steps {
         echo 'Compile Maven App'
         sh 'mvn compile'
@@ -14,28 +15,47 @@ pipeline {
     }
 
     stage('Test') {
-      parallel {
-        stage('Test') {
-          steps {
-            echo 'Test Maven App'
-            sh 'mvn clean test'
-          }
+      agent {
+        docker {
+          image 'maven:3.6.3-jdk-11-slim'
         }
 
-        stage('SCA') {
-          steps {
-            sleep 5
-          }
-        }
-
+      }
+      steps {
+        echo 'Test Maven App'
+        sh 'mvn clean test'
       }
     }
 
     stage('Package') {
-      steps {
-        echo 'Package Maven App'
-        sh 'mvn package -DskipTests'
-        archiveArtifacts 'target/*.war'
+      parallel {
+        stage('Package') {
+          agent {
+            docker {
+              image 'maven:3.6.3-jdk-11-slim'
+            }
+
+          }
+          steps {
+            echo 'Package Maven App'
+            sh 'mvn package -DskipTests'
+            archiveArtifacts 'target/*.war'
+          }
+        }
+
+        stage('Docker BnP') {
+           when {
+              branch 'master'
+            }
+          agent any
+          steps {
+            script {
+              "docker image build -t dockerusernmae/sysfoo:v${env.BUILD_ID} ."
+            }
+
+          }
+        }
+
       }
     }
 
