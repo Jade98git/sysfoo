@@ -49,7 +49,7 @@ pipeline {
             branch 'master'
           }
           steps {
-            sh 'docker image build -t dockerusernmae/sysfoo:v${env.BUILD_ID} .'
+            sh "docker image build -t dockerusernmae/sysfoo:v${env.BUILD_ID} ."
           }
         }
 
