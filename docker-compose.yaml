@@ -2,6 +2,6 @@ version: "3.8"
 
 services:
   sysfoo:
-    image: xxxxx/sysfoo:dev
+    image: dokcerusernmae/sysfoo:dev
     ports:
       - 8888:8080
