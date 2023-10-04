@@ -57,6 +57,9 @@ pipeline {
     }
 
     stage('Delpoy Dev') {
+      when {
+        branch 'master'
+      }
       steps {
         sh 'docker-compose up -d'
       }
